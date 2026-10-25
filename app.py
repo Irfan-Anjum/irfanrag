@@ -222,73 +222,78 @@ def chat_models(ids):
 # ======================================================================
 CSS = """
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
-:root{color-scheme:light;--ink:#172033;--muted:#58657a;--line:#e1e7f0;--surface:#ffffff;--soft:#f4f7fb;--primary:#3157d5;--primary-dark:#2444b5;--accent:#e9efff}
-html,body,.stApp,[data-testid="stApp"],[data-testid="stAppViewContainer"],[data-testid="stMain"]{background:#f6f8fc!important}
+:root{color-scheme:dark;--ink:#edf4ff;--muted:#9caec8;--line:rgba(151,180,220,.2);--surface:#111d32;--soft:#0b1425;--primary:#38d6c2;--primary-dark:#20b6aa;--accent:#162f49}
+html,body,.stApp,[data-testid="stApp"],[data-testid="stAppViewContainer"],[data-testid="stMain"]{background:#08111f!important}
 body,.stApp{font-family:'DM Sans',system-ui,sans-serif;font-size:15px;color:var(--ink)!important}
+.stApp{background:radial-gradient(ellipse at 12% 0%,rgba(31,87,130,.28),transparent 38%),radial-gradient(ellipse at 94% 15%,rgba(24,151,143,.14),transparent 30%),#08111f!important}
 .stApp *{color:var(--ink)}
-p,li,label,[data-testid="stCaptionContainer"],.stMarkdown{color:var(--ink)}
-a{color:#244fc4!important;text-decoration:none}
+p,li,label,[data-testid="stCaptionContainer"],.stMarkdown{color:#d4dfef}
+a{color:#55e3d2!important;text-decoration:none}
 a:hover{text-decoration:underline}
-::placeholder{color:#758198!important;opacity:1!important}
-[data-testid="stHeader"]{background:rgba(246,248,252,.92)!important}
+::placeholder{color:#8194ae!important;opacity:1!important}
+[data-testid="stHeader"]{background:rgba(8,17,31,.92)!important}
 [data-testid="stAppDeployButton"]{display:none}
-[data-testid="stMainBlockContainer"]{max-width:1040px;padding:2rem 1.5rem 9rem;position:relative;z-index:2}
-[data-testid="stBottom"],[data-testid="stBottom"]>div,[data-testid="stBottomBlockContainer"]{background:#f6f8fc!important}
-[data-testid="stBottomBlockContainer"]{max-width:1040px;position:relative;z-index:2;padding-bottom:1rem}
-[data-testid="stChatInput"]{background:#fff!important;border:1px solid #d7deea!important;border-radius:18px!important;box-shadow:0 8px 28px rgba(28,44,78,.08)}
-[data-testid="stChatInput"]>div,[data-testid="stChatInput"] textarea{background:transparent!important;color:#172033!important}
+[data-testid="stMainBlockContainer"]{max-width:1080px;padding:2rem 1.5rem 9rem;position:relative;z-index:2}
+[data-testid="stBottom"],[data-testid="stBottom"]>div,[data-testid="stBottomBlockContainer"]{background:#08111f!important}
+[data-testid="stBottomBlockContainer"]{max-width:1080px;position:relative;z-index:2;padding-bottom:1rem}
+[data-testid="stChatInput"]{background:#101d30!important;border:1px solid rgba(104,148,185,.38)!important;border-radius:20px!important;box-shadow:0 12px 38px rgba(0,0,0,.22),0 0 0 1px rgba(55,214,194,.04)}
+[data-testid="stChatInput"]>div,[data-testid="stChatInput"] textarea{background:transparent!important;color:#edf4ff!important}
 [data-testid="stChatInput"] textarea{font-size:15px!important}
-[data-testid="stChatInputFileUploadButton"],[data-testid="stChatInputSubmitButton"]{background:#3157d5!important;border:0!important;border-radius:12px!important}
-[data-testid="stChatInputFileUploadButton"] svg,[data-testid="stChatInputSubmitButton"] svg{color:#fff!important;fill:#fff!important}
-[data-testid="stChatMessage"]{background:#fff;border:1px solid #e3e8f1;border-radius:18px;padding:1rem 1.15rem;box-shadow:0 3px 12px rgba(25,40,70,.035)}
-[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]){background:#edf3ff;border-color:#d4e0ff}
-button[data-testid^="stBaseButton"]{background:#fff!important;color:#25334d!important;border:1px solid #d8dfeb!important;border-radius:11px!important;font-weight:600;transition:all .15s ease}
-button[data-testid^="stBaseButton"]:hover{border-color:#8da5ef!important;background:#f3f6ff!important;color:#2444b5!important}
-button[data-testid="stBaseButton-primary"]{background:#3157d5!important;color:#fff!important;border-color:#3157d5!important}
-button[data-testid="stBaseButton-primary"]:hover{background:#2444b5!important;color:#fff!important}
-button[data-testid="stBaseButton-primary"] *{color:#fff!important}
-[data-testid="stFileUploaderDropzone"]{background:#fff!important;border:1.5px dashed #b9c8e7!important;border-radius:16px!important;padding:22px!important}
-[data-testid="stFileUploaderDropzone"] *{color:#34425c!important}
-[data-testid="stFileUploaderDropzone"] button{background:#edf2ff!important;border:1px solid #cbd8fb!important;color:#2444b5!important;padding:.5rem 1rem!important}
-[data-baseweb="input"],[data-baseweb="base-input"],[data-baseweb="textarea"],[data-baseweb="select"]>div{background:#fff!important;border:1px solid #d7deea!important;border-radius:10px!important;color:#172033!important}
-[data-baseweb="input"] input,[data-baseweb="base-input"] input,[data-baseweb="textarea"] textarea{background:transparent!important;color:#172033!important;-webkit-text-fill-color:#172033!important}
-[data-baseweb="select"] *{color:#172033!important}
-[data-baseweb="popover"],[data-baseweb="menu"],ul[role="listbox"],[data-testid="stPopoverBody"]{background:#fff!important}
-[data-baseweb="popover"]>div,[data-testid="stPopoverBody"]{border:1px solid #e0e6f0!important;border-radius:12px!important;box-shadow:0 12px 32px rgba(20,35,65,.12)}
-li[role="option"]:hover,li[role="option"][aria-selected="true"]{background:#edf2ff!important}
-[data-testid="stAlert"]{background:#fff!important;border:1px solid #dfe6f0!important;border-radius:12px!important}
-[data-testid="stAlert"] *{color:#24314a!important}
-[data-testid="stExpander"] details,[data-testid="stStatus"] details{background:#fff!important;border:1px solid #e0e6f0!important;border-radius:14px!important}
-[data-testid="stExpander"] summary,[data-testid="stStatus"] summary{color:#24314a!important}
-pre,code{background:#f0f3f8!important;color:#24314a!important;border-radius:8px}
-div[role="dialog"]{background:#fff!important;border:1px solid #e0e6f0!important;border-radius:20px!important;box-shadow:0 24px 70px rgba(18,32,62,.2)}
-div[role="dialog"] *{color:#172033}
-.brand{display:flex;align-items:center;gap:0}
-.brand .bt,.brand .bf{border:1px solid #e0e7f3;background:#fff;border-radius:14px;box-shadow:0 4px 16px rgba(25,45,85,.06)}
-.brand .bt{padding:14px 22px;font:800 24px 'Manrope',sans-serif;letter-spacing:-.04em;color:#1d2b49!important}
-.brand .neck{width:10px;height:12px;background:#dbe5ff}
-.brand .bf{width:54px;height:52px;display:grid;place-items:center}
-.brand svg{filter:none}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 8px}
-.chip{border:1px solid #dfe6f0;background:#fff;border-radius:999px;padding:6px 12px;font-size:12px;color:#33415c!important}
-.chip i{font-style:normal;color:#68758b!important;margin-left:6px}
-.chip.ok{background:#eefaf3;border-color:#ccebd9}
-.chip.ok::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#20a464;margin-right:8px}
-.hero{text-align:center;margin:5vh 0 3vh}
-.hero h1{font:800 clamp(29px,4vw,43px)/1.15 'Manrope',sans-serif;letter-spacing:-.045em;margin:0 0 12px;color:#172746!important}
-.hero p,.uphead p,.step span{color:#64718a!important;margin:0}
+[data-testid="stChatInputFileUploadButton"],[data-testid="stChatInputSubmitButton"]{background:linear-gradient(135deg,#38d6c2,#258bd0)!important;border:0!important;border-radius:12px!important}
+[data-testid="stChatInputFileUploadButton"] svg,[data-testid="stChatInputSubmitButton"] svg{color:#061522!important;fill:#061522!important}
+[data-testid="stChatMessage"]{background:linear-gradient(145deg,rgba(20,35,57,.96),rgba(13,25,43,.96));border:1px solid rgba(126,159,199,.18);border-radius:18px;padding:1rem 1.15rem;box-shadow:0 8px 26px rgba(0,0,0,.1)}
+[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]){background:linear-gradient(145deg,rgba(22,58,78,.9),rgba(17,42,65,.95));border-color:rgba(56,214,194,.25)}
+button[data-testid^="stBaseButton"]{background:#122139!important;color:#dce8f7!important;border:1px solid rgba(140,169,205,.25)!important;border-radius:12px!important;font-weight:600;transition:all .18s ease}
+button[data-testid^="stBaseButton"]:hover{border-color:#38d6c2!important;background:#18314a!important;color:#fff!important;transform:translateY(-1px)}
+button[data-testid="stBaseButton-primary"]{background:linear-gradient(135deg,#38d6c2,#288acb)!important;color:#071522!important;border-color:transparent!important;box-shadow:0 5px 18px rgba(43,198,188,.18)}
+button[data-testid="stBaseButton-primary"]:hover{background:linear-gradient(135deg,#5be6d5,#38a6e2)!important;color:#071522!important}
+button[data-testid="stBaseButton-primary"] *{color:#071522!important}
+[data-testid="stFileUploaderDropzone"]{background:linear-gradient(145deg,rgba(17,33,54,.96),rgba(12,25,43,.96))!important;border:1.5px dashed rgba(56,214,194,.48)!important;border-radius:18px!important;padding:24px!important}
+[data-testid="stFileUploaderDropzone"] *{color:#dce8f7!important}
+[data-testid="stFileUploaderDropzone"] button{background:#173b4c!important;border:1px solid rgba(56,214,194,.38)!important;color:#66e8d8!important;padding:.55rem 1rem!important}
+[data-baseweb="input"],[data-baseweb="base-input"],[data-baseweb="textarea"],[data-baseweb="select"]>div{background:#101d30!important;border:1px solid rgba(140,169,205,.27)!important;border-radius:11px!important;color:#edf4ff!important}
+[data-baseweb="input"] input,[data-baseweb="base-input"] input,[data-baseweb="textarea"] textarea{background:transparent!important;color:#edf4ff!important;-webkit-text-fill-color:#edf4ff!important}
+[data-baseweb="select"] *{color:#edf4ff!important}
+[data-baseweb="popover"],[data-baseweb="menu"],ul[role="listbox"],[data-testid="stPopoverBody"]{background:#101d30!important}
+[data-baseweb="popover"]>div,[data-testid="stPopoverBody"]{border:1px solid rgba(140,169,205,.25)!important;border-radius:13px!important;box-shadow:0 14px 38px rgba(0,0,0,.35)}
+li[role="option"]:hover,li[role="option"][aria-selected="true"]{background:#1b354b!important}
+[data-testid="stAlert"]{background:#112239!important;border:1px solid rgba(140,169,205,.25)!important;border-radius:13px!important}
+[data-testid="stAlert"] *{color:#e0ebf9!important}
+[data-testid="stExpander"] details,[data-testid="stStatus"] details{background:#101d30!important;border:1px solid rgba(140,169,205,.2)!important;border-radius:14px!important}
+[data-testid="stExpander"] summary,[data-testid="stStatus"] summary{color:#e0ebf9!important}
+pre,code{background:#0b1728!important;color:#a8f1e7!important;border:1px solid rgba(140,169,205,.14);border-radius:8px}
+div[role="dialog"]{background:#0f1b2e!important;border:1px solid rgba(110,162,194,.3)!important;border-radius:22px!important;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+div[role="dialog"] *{color:#edf4ff}
+.brand{display:flex;align-items:center;gap:13px;padding:6px 0 14px}
+.brand-mark{width:56px;height:56px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(145deg,#17394b,#10273b);border:1px solid rgba(56,214,194,.42);box-shadow:0 8px 28px rgba(14,190,177,.12),inset 0 1px 0 rgba(255,255,255,.08)}
+.brand-mark svg{width:39px;height:39px;filter:drop-shadow(0 0 7px rgba(56,214,194,.23))}
+.brand-copy{display:flex;flex-direction:column;gap:2px}
+.brand .bt{font:800 25px/1.1 'Manrope',sans-serif;letter-spacing:-.045em;color:#f2f7ff!important}
+.brand .bt em{font-style:normal;color:#4fe0cf!important}
+.brand .tagline{font-size:11px;font-weight:700;letter-spacing:.19em;text-transform:uppercase;color:#8ea7c2!important}
+.brand .neck,.brand .bf{display:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 12px}
+.chip{border:1px solid rgba(140,169,205,.22);background:rgba(17,33,54,.86);border-radius:999px;padding:6px 12px;font-size:12px;color:#dce8f7!important}
+.chip i{font-style:normal;color:#91a8c3!important;margin-left:6px}
+.chip.ok{background:rgba(24,119,101,.18);border-color:rgba(56,214,194,.28)}
+.chip.ok::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#45dfad;margin-right:8px;box-shadow:0 0 9px rgba(69,223,173,.45)}
+.hero{text-align:center;margin:5vh 0 3vh;padding:28px 18px 24px;border:1px solid rgba(121,164,200,.16);border-radius:24px;background:radial-gradient(ellipse at 50% 0%,rgba(37,121,144,.2),transparent 65%),linear-gradient(145deg,rgba(17,32,52,.84),rgba(10,22,39,.65));box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.hero h1{font:800 clamp(30px,4.2vw,46px)/1.12 'Manrope',sans-serif;letter-spacing:-.05em;margin:0 0 12px;color:#f1f7ff!important}
+.hero p,.uphead p,.step span{color:#a4b6cc!important;margin:0}
 .uphead{margin:28px 0 12px}
-.uphead h3{font:800 22px 'Manrope',sans-serif;letter-spacing:-.025em;color:#1d2b49!important;margin:0 0 6px}
+.uphead h3{font:800 23px 'Manrope',sans-serif;letter-spacing:-.03em;color:#f0f6ff!important;margin:0 0 7px}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}
-.step{border:1px solid #e0e7f1;background:#fff;border-radius:16px;padding:18px 20px;box-shadow:0 4px 16px rgba(30,50,85,.035)}
-.step b{display:block;font:700 14px 'Manrope',sans-serif;color:#243453!important;margin-bottom:6px}
-.step span{font-size:13px;line-height:1.55;display:block}
-.tip{text-align:center;font-size:12px;color:#758198!important;margin-top:8px}
+.step{position:relative;overflow:hidden;border:1px solid rgba(121,164,200,.2);background:linear-gradient(145deg,rgba(19,38,61,.96),rgba(12,26,44,.96));border-radius:17px;padding:20px 20px;box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.step:before{content:"";position:absolute;top:0;left:18px;right:18px;height:2px;background:linear-gradient(90deg,#38d6c2,#338ee0);opacity:.8}
+.step b{display:block;font:700 14px 'Manrope',sans-serif;color:#eff8ff!important;margin-bottom:7px}
+.step span{font-size:13px;line-height:1.6;display:block}
+.tip{text-align:center;font-size:12px;color:#8298b3!important;margin-top:8px}
 .mascot{display:none!important}
-[data-testid="stMarkdownContainer"] h1,[data-testid="stMarkdownContainer"] h2,[data-testid="stMarkdownContainer"] h3{color:#172746!important;font-family:'Manrope',sans-serif;letter-spacing:-.025em}
-[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.65}
+[data-testid="stMarkdownContainer"] h1,[data-testid="stMarkdownContainer"] h2,[data-testid="stMarkdownContainer"] h3{color:#f0f6ff!important;font-family:'Manrope',sans-serif;letter-spacing:-.025em}
+[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.7}
 [data-testid="stPills"] button{border-radius:999px!important}
-@media(max-width:760px){[data-testid="stMainBlockContainer"]{padding:1.2rem .85rem 8rem}.brand .bt{padding:11px 14px;font-size:20px}.brand .bf{width:46px;height:44px}.steps{grid-template-columns:1fr}.hero{margin:3vh 0 2vh}}
+[data-testid="stPills"] button[aria-pressed="true"]{background:linear-gradient(135deg,#38d6c2,#288acb)!important;color:#071522!important;border-color:transparent!important}
+@media(max-width:760px){[data-testid="stMainBlockContainer"]{padding:1.2rem .85rem 8rem}.brand .bt{font-size:22px}.brand-mark{width:48px;height:48px}.steps{grid-template-columns:1fr}.hero{margin:3vh 0 2vh;padding:22px 14px}.brand .tagline{font-size:9px}}
 """
 
 MASCOT = """<svg class="mascot" viewBox="0 0 320 520" xmlns="http://www.w3.org/2000/svg">
@@ -310,7 +315,7 @@ MASCOT = """<svg class="mascot" viewBox="0 0 320 520" xmlns="http://www.w3.org/2
 <g stroke="#ffe3cc" stroke-width="8" stroke-linecap="round" fill="none" filter="url(#rg)"><path d="M116 140q15-26 30 0"/><path d="M174 140q15-26 30 0"/><path d="M138 170q22 24 44 0"/></g>
 </svg>"""
 
-BRAND = """<div class="brand"><div class="bt">RAG Chatbot</div><div class="neck"></div><div class="bf"><svg width="38" height="38" viewBox="0 0 48 48"><defs><linearGradient id="ff" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8cb8ff"/><stop offset="1" stop-color="#2e4bd6"/></linearGradient></defs><path d="M5 14a4 4 0 0 1 4-4h10l4 5h16a4 4 0 0 1 4 4v18a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z" fill="url(#ff)"/><path d="M5 22h38v15a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z" fill="#1f3bd0" opacity=".85"/></svg></div></div>"""
+BRAND = """<div class="brand"><div class="brand-mark"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="RAG network logo"><path d="M13 8.5h14l8 8V35a4 4 0 0 1-4 4H13a4 4 0 0 1-4-4V12.5a4 4 0 0 1 4-4Z" stroke="#5CE5D4" stroke-width="2.2" stroke-linejoin="round"/><path d="M27 9v9h8" stroke="#5CE5D4" stroke-width="2.2" stroke-linejoin="round"/><path d="M15 25h7m-7 5h5" stroke="#8BB8FF" stroke-width="2" stroke-linecap="round"/><circle cx="30.5" cy="26" r="3.5" fill="#38D6C2"/><circle cx="27" cy="33" r="2.2" fill="#8BB8FF"/><path d="m28.5 29-1 2M27 33l-4-2m7.5-1 3 2" stroke="#8BB8FF" stroke-width="1.5" stroke-linecap="round"/><circle cx="34" cy="34" r="2.2" fill="#38D6C2"/></svg></div><div class="brand-copy"><div class="bt">Irfan<em>RAG</em></div><div class="tagline">Knowledge · Retrieval · Answers</div></div></div>"""
 
 
 def inject_theme():
