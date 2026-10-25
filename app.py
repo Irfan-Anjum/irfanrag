@@ -266,15 +266,18 @@ li[role="option"]:hover,li[role="option"][aria-selected="true"]{background:#1b35
 [data-testid="stExpander"] details,[data-testid="stStatus"] details{background:#101d30!important;border:1px solid rgba(140,169,205,.2)!important;border-radius:14px!important}
 [data-testid="stExpander"] summary,[data-testid="stStatus"] summary{color:#e0ebf9!important}
 pre,code{background:#0b1728!important;color:#a8f1e7!important;border:1px solid rgba(140,169,205,.14);border-radius:8px}
-div[role="dialog"]{background:#0f1b2e!important;border:1px solid rgba(110,162,194,.3)!important;border-radius:22px!important;box-shadow:0 24px 80px rgba(0,0,0,.5)}
-div[role="dialog"] *{color:#edf4ff}
-/* High-contrast text for login and user-guide dialogs */
-[data-testid="stDialog"],[data-testid="stDialog"] [data-testid="stDialogContent"],[data-testid="stDialog"] [data-testid="stMarkdownContainer"]{background:#0f1b2e!important;color:#edf4ff!important}
-[data-testid="stDialog"] h1,[data-testid="stDialog"] h2,[data-testid="stDialog"] h3,[data-testid="stDialog"] p,[data-testid="stDialog"] li,[data-testid="stDialog"] strong,[data-testid="stDialog"] label,[data-testid="stDialog"] span,[data-testid="stDialog"] [data-testid="stCaptionContainer"],[data-testid="stDialog"] [data-testid="stMarkdownContainer"] *{color:#edf4ff!important;opacity:1!important}
-[data-testid="stDialog"] input{background:#091525!important;color:#f4f8ff!important;-webkit-text-fill-color:#f4f8ff!important;border:1px solid #42617e!important}
-[data-testid="stDialog"] input::placeholder{color:#9aacc2!important;-webkit-text-fill-color:#9aacc2!important;opacity:1!important}
-[data-testid="stDialog"] a{color:#55e3d2!important}
-[data-testid="stDialog"] button[data-testid="stBaseButton-primary"],[data-testid="stDialog"] button[data-testid="stBaseButton-primary"] *{color:#071522!important}
+/* Dialogs intentionally use a LIGHT surface for reliable contrast across Streamlit versions */
+[data-testid="stDialog"],[data-testid="stDialog"]>div,[data-testid="stDialog"] [role="dialog"],div[role="dialog"]{background:#f8fbff!important;background-color:#f8fbff!important;color:#17263b!important;border:1px solid #d4deeb!important;border-radius:20px!important;box-shadow:0 24px 80px rgba(0,0,0,.48)!important}
+[data-testid="stDialog"] [data-testid="stDialogHeader"],[data-testid="stDialog"] [data-testid="stDialogContent"],[data-testid="stDialog"] [data-testid="stVerticalBlock"],[data-testid="stDialog"] [data-testid="stMarkdownContainer"],[data-testid="stDialog"] .stMarkdown,div[role="dialog"] [data-testid="stMarkdownContainer"]{background:transparent!important;background-color:transparent!important;color:#17263b!important}
+[data-testid="stDialog"] *,div[role="dialog"] *{color:#17263b!important;opacity:1!important}
+[data-testid="stDialog"] h1,[data-testid="stDialog"] h2,[data-testid="stDialog"] h3,[data-testid="stDialog"] h4,[data-testid="stDialog"] p,[data-testid="stDialog"] li,[data-testid="stDialog"] label,[data-testid="stDialog"] span,[data-testid="stDialog"] [data-testid="stCaptionContainer"],div[role="dialog"] p,div[role="dialog"] li,div[role="dialog"] label{color:#17263b!important}
+[data-testid="stDialog"] a,div[role="dialog"] a{color:#176b80!important;text-decoration:underline}
+[data-testid="stDialog"] [data-baseweb="input"],[data-testid="stDialog"] [data-baseweb="base-input"],[data-testid="stDialog"] input,[data-testid="stDialog"] textarea,div[role="dialog"] input{background:#fff!important;background-color:#fff!important;color:#17263b!important;-webkit-text-fill-color:#17263b!important;border:1px solid #b8c6d8!important;border-radius:9px!important}
+[data-testid="stDialog"] input::placeholder,div[role="dialog"] input::placeholder{color:#64748b!important;-webkit-text-fill-color:#64748b!important;opacity:1!important}
+[data-testid="stDialog"] button,div[role="dialog"] button{color:#17263b!important}
+[data-testid="stDialog"] button[data-testid="stBaseButton-primary"],[data-testid="stDialog"] button[data-testid="stBaseButton-primary"] *,div[role="dialog"] button[data-testid="stBaseButton-primary"],div[role="dialog"] button[data-testid="stBaseButton-primary"] *{background:#167e89!important;color:#fff!important;border-color:#167e89!important}
+[data-testid="stDialog"] [data-testid="stDialogCloseButton"],div[role="dialog"] [data-testid="stDialogCloseButton"]{background:#eaf0f7!important;border:1px solid #cbd6e4!important}
+[data-testid="stDialog"] [data-testid="stDialogCloseButton"] svg,div[role="dialog"] [data-testid="stDialogCloseButton"] svg{color:#17263b!important;fill:#17263b!important}
 .brand{display:flex;align-items:center;gap:13px;padding:6px 0 14px}
 .brand-mark{width:56px;height:56px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(145deg,#17394b,#10273b);border:1px solid rgba(56,214,194,.42);box-shadow:0 8px 28px rgba(14,190,177,.12),inset 0 1px 0 rgba(255,255,255,.08)}
 .brand-mark svg{width:39px;height:39px;filter:drop-shadow(0 0 7px rgba(56,214,194,.23))}
