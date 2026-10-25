@@ -387,7 +387,7 @@ GUIDE = """
 Open **🔍 Sources** under any answer to see the exact passages it used. If the answer is not in your files the assistant says so instead of guessing.
 
 ### The ⚙️ Settings menu
-Choose the OpenAI model used for Normal and DeepThink modes. Adjust **chunk size** (300–4,000 characters) and **chunk overlap** (0 up to the selected chunk size minus 50 characters). Chunking settings apply to files indexed after you change them; remove and re-upload a file to re-index it. You can also clear the chat, remove all documents, or sign out.
+Use the visible **RAG Settings · Models · Retrieval** panel to choose Normal and DeepThink models, set chunk size and overlap, and control retrieved passages (1–20). Chunk settings apply to newly indexed files; remove and re-upload a file to re-index it.
 
 ### Tips and limits
 - Scanned PDFs or images of text have no readable text. Use a text-based PDF.
@@ -430,33 +430,51 @@ def render_sources(sources):
             st.text(s["text"][:500])
 
 
-def settings_popover():
-    with st.popover("⚙️ Settings"):
-        models = st.session_state.models
-        st.markdown("**Answer models**")
-        st.caption("Choose which available OpenAI model powers each mode.")
-        st.selectbox("Normal mode model", list(dict.fromkeys([st.session_state.normal_model] + models)), key="normal_model")
-        st.selectbox("DeepThink model", list(dict.fromkeys([st.session_state.deep_model] + models)), key="deep_model")
+def settings_panel():
+    """Keep essential RAG controls visible instead of hiding them in a tiny popover."""
+    with st.expander("⚙️ RAG SETTINGS · MODELS · RETRIEVAL", expanded=True):
+        st.caption("Choose the models and retrieval settings used for your next question or document upload.")
+        models = list(dict.fromkeys(st.session_state.get("models", [])))
+        if not models:
+            st.warning("No chat models were returned for this API key. Sign out and verify an API key with model access.")
+        else:
+            c1, c2 = st.columns(2)
+            with c1:
+                st.selectbox("Normal mode model", models, key="normal_model",
+                             help="Model used when Normal mode is selected.")
+            with c2:
+                st.selectbox("DeepThink model", models, key="deep_model",
+                             help="Model used when DeepThink mode is selected.")
         st.divider()
-        st.markdown("**Document chunking**")
-        st.caption("These settings apply when you index new files. Remove and re-upload existing files to re-index them.")
-        chunk_size = st.slider("Chunk size (characters)", min_value=300, max_value=4000, step=100, key="chunk_size",
-                               help="Larger chunks keep more context together; smaller chunks give more precise retrieval.")
-        max_overlap = max(0, chunk_size - 50)
-        if st.session_state.get("chunk_overlap", 150) > max_overlap:
-            st.session_state.chunk_overlap = min(150, max_overlap)
-        st.slider("Chunk overlap (characters)", min_value=0, max_value=max_overlap, step=25, key="chunk_overlap",
-                  help="Overlap preserves context between neighbouring chunks.")
-        st.caption(f"Current setup: {chunk_size:,} characters per chunk · {st.session_state.chunk_overlap:,} overlap")
-        if st.button("Clear chat"):
-            st.session_state.messages = []
-            st.rerun()
-        if st.button("Remove all documents"):
-            st.session_state.kb = new_kb()
-            st.rerun()
-        if st.button("Sign out"):
-            st.session_state.clear()
-            st.rerun()
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            st.slider("Chunk size (characters)", min_value=300, max_value=4000, step=100,
+                      key="chunk_size", help="Number of characters in each indexed text chunk.")
+        with c2:
+            max_overlap = max(0, st.session_state.chunk_size - 50)
+            if st.session_state.chunk_overlap > max_overlap:
+                st.session_state.chunk_overlap = min(150, max_overlap)
+            st.slider("Chunk overlap (characters)", min_value=0, max_value=max_overlap, step=25,
+                      key="chunk_overlap", help="Repeated characters shared by adjacent chunks.")
+        with c3:
+            st.slider("Retrieved passages", min_value=1, max_value=20, step=1,
+                      key="retrieved_passages", help="Number of relevant passages supplied to the model for each answer.")
+        st.caption(
+            f"Current settings: {st.session_state.chunk_size:,} chunk size · "
+            f"{st.session_state.chunk_overlap:,} overlap · "
+            f"{st.session_state.retrieved_passages} retrieved passages. "
+            "Chunk settings apply to newly indexed files; re-upload files to re-index them."
+        )
+        with st.expander("More actions"):
+            if st.button("Clear chat"):
+                st.session_state.messages = []
+                st.rerun()
+            if st.button("Remove all documents"):
+                st.session_state.kb = new_kb()
+                st.rerun()
+            if st.button("Sign out"):
+                st.session_state.clear()
+                st.rerun()
 
 
 def add_note(added, problems):
@@ -503,6 +521,7 @@ def main():
     st.session_state.setdefault("up_n", 0)
     st.session_state.setdefault("chunk_size", 1000)
     st.session_state.setdefault("chunk_overlap", 150)
+    st.session_state.setdefault("retrieved_passages", 4)
     kb = st.session_state.kb
     client = make_client(st.session_state.api_key)
     pending = st.session_state.pop("pending_q", None)
@@ -511,12 +530,11 @@ def main():
         st.session_state.guide_seen = True
         guide_dialog()
 
-    left, help_col, gear = st.columns([8, 1, 1], vertical_alignment="center")
+    left, help_col = st.columns([9, 1], vertical_alignment="center")
     left.markdown(BRAND, unsafe_allow_html=True)
     if help_col.button("❓", help="User guide"):
         guide_dialog()
-    with gear:
-        settings_popover()
+    settings_panel()
 
     chips = f'<span class="chip ok">Signed in<i>{html.escape(st.session_state.normal_model)}</i></span>'
     chips += "".join(
@@ -581,7 +599,7 @@ def main():
             previous = [m["content"] for m in history if m["role"] == "user"]
             query = f"{previous[-1]} {text}" if len(text.split()) < 6 and previous else text
             with st.spinner("Searching your documents…"):
-                hits = retrieve(client, query, TOP_K[mode])
+                hits = retrieve(client, query, st.session_state.retrieved_passages)
             context = "\n\n".join(f"[{h['source']} · {h['loc']}]\n{h['text']}" for h in hits)
             system = SYSTEM.replace("{context}", context) + (DEEP_EXTRA if mode == "DeepThink" else "")
             messages = [{"role": "system", "content": system}]
