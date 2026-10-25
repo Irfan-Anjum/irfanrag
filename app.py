@@ -477,7 +477,7 @@ def uploader_block(client):
 
 
 def main():
-    st.set_page_config(page_title="RAG Chatbot", page_icon="📁", layout="wide", initial_sidebar_state="collapsed")
+    st.set_page_config(page_title="IrfanRAG — Document Intelligence", page_icon="irfanrag-logo.svg", layout="wide", initial_sidebar_state="collapsed")
     inject_theme()
 
     if not st.session_state.get("api_key"):
