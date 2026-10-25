@@ -431,48 +431,59 @@ def render_sources(sources):
 
 
 def settings_panel():
-    """Keep essential RAG controls visible instead of hiding them in a tiny popover."""
-    with st.expander("⚙️ RAG SETTINGS · MODELS · RETRIEVAL", expanded=True):
-        st.caption("Choose the models and retrieval settings used for your next question or document upload.")
+    """Render model and RAG controls in Streamlit's left sidebar."""
+    with st.sidebar:
+        st.markdown("## ⚙️ RAG Settings")
+        st.caption("Models · Chunking · Retrieval")
+        st.divider()
         models = list(dict.fromkeys(st.session_state.get("models", [])))
         if not models:
-            st.warning("No chat models were returned for this API key. Sign out and verify an API key with model access.")
+            st.warning("No models available. Check your OpenAI API key and model access.")
         else:
-            c1, c2 = st.columns(2)
-            with c1:
-                st.selectbox("Normal mode model", models, key="normal_model",
-                             help="Model used when Normal mode is selected.")
-            with c2:
-                st.selectbox("DeepThink model", models, key="deep_model",
-                             help="Model used when DeepThink mode is selected.")
+            st.selectbox(
+                "Normal mode model", models, key="normal_model",
+                help="Model used for standard questions."
+            )
+            st.selectbox(
+                "DeepThink model", models, key="deep_model",
+                help="Model used for more detailed reasoning."
+            )
         st.divider()
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            st.slider("Chunk size (characters)", min_value=300, max_value=4000, step=100,
-                      key="chunk_size", help="Number of characters in each indexed text chunk.")
-        with c2:
-            max_overlap = max(0, st.session_state.chunk_size - 50)
-            if st.session_state.chunk_overlap > max_overlap:
-                st.session_state.chunk_overlap = min(150, max_overlap)
-            st.slider("Chunk overlap (characters)", min_value=0, max_value=max_overlap, step=25,
-                      key="chunk_overlap", help="Repeated characters shared by adjacent chunks.")
-        with c3:
-            st.slider("Retrieved passages", min_value=1, max_value=20, step=1,
-                      key="retrieved_passages", help="Number of relevant passages supplied to the model for each answer.")
-        st.caption(
-            f"Current settings: {st.session_state.chunk_size:,} chunk size · "
-            f"{st.session_state.chunk_overlap:,} overlap · "
-            f"{st.session_state.retrieved_passages} retrieved passages. "
-            "Chunk settings apply to newly indexed files; re-upload files to re-index them."
+        st.markdown("### Document chunking")
+        st.slider(
+            "Chunk size (characters)", min_value=300, max_value=4000, step=100,
+            key="chunk_size",
+            help="Number of characters in each indexed text chunk."
         )
+        max_overlap = max(0, st.session_state.chunk_size - 50)
+        if st.session_state.chunk_overlap > max_overlap:
+            st.session_state.chunk_overlap = min(150, max_overlap)
+        st.slider(
+            "Chunk overlap (characters)", min_value=0, max_value=max_overlap, step=25,
+            key="chunk_overlap",
+            help="Text repeated between neighbouring chunks to preserve context."
+        )
+        st.divider()
+        st.markdown("### Retrieval")
+        st.slider(
+            "Retrieved passages", min_value=1, max_value=20, step=1,
+            key="retrieved_passages",
+            help="Number of relevant passages supplied to the model for each answer."
+        )
+        st.caption(
+            f"Chunk size: {st.session_state.chunk_size:,} · "
+            f"Overlap: {st.session_state.chunk_overlap:,} · "
+            f"Passages: {st.session_state.retrieved_passages}"
+        )
+        st.caption("Chunk settings apply to newly indexed files. Re-upload files to re-index them.")
         with st.expander("More actions"):
-            if st.button("Clear chat"):
+            if st.button("Clear chat", use_container_width=True):
                 st.session_state.messages = []
                 st.rerun()
-            if st.button("Remove all documents"):
+            if st.button("Remove all documents", use_container_width=True):
                 st.session_state.kb = new_kb()
                 st.rerun()
-            if st.button("Sign out"):
+            if st.button("Sign out", use_container_width=True):
                 st.session_state.clear()
                 st.rerun()
 
@@ -505,7 +516,7 @@ def uploader_block(client):
 
 
 def main():
-    st.set_page_config(page_title="IrfanRAG — Document Intelligence", page_icon="irfanrag-logo.svg", layout="wide", initial_sidebar_state="collapsed")
+    st.set_page_config(page_title="IrfanRAG — Document Intelligence", page_icon="irfanrag-logo.svg", layout="wide", initial_sidebar_state="expanded")
     inject_theme()
 
     if not st.session_state.get("api_key"):
@@ -524,6 +535,7 @@ def main():
     st.session_state.setdefault("retrieved_passages", 4)
     kb = st.session_state.kb
     client = make_client(st.session_state.api_key)
+    settings_panel()
     pending = st.session_state.pop("pending_q", None)
 
     if not st.session_state.get("guide_seen"):
@@ -534,8 +546,6 @@ def main():
     left.markdown(BRAND, unsafe_allow_html=True)
     if help_col.button("❓", help="User guide"):
         guide_dialog()
-    settings_panel()
-
     chips = f'<span class="chip ok">Signed in<i>{html.escape(st.session_state.normal_model)}</i></span>'
     chips += "".join(
         f'<span class="chip">{ICONS.get(n.rsplit(".", 1)[-1].lower(), "📄")} {html.escape(n)}<i>{v["chunks"]} parts</i></span>'
