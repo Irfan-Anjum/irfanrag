@@ -268,6 +268,13 @@ li[role="option"]:hover,li[role="option"][aria-selected="true"]{background:#1b35
 pre,code{background:#0b1728!important;color:#a8f1e7!important;border:1px solid rgba(140,169,205,.14);border-radius:8px}
 div[role="dialog"]{background:#0f1b2e!important;border:1px solid rgba(110,162,194,.3)!important;border-radius:22px!important;box-shadow:0 24px 80px rgba(0,0,0,.5)}
 div[role="dialog"] *{color:#edf4ff}
+/* High-contrast text for login and user-guide dialogs */
+[data-testid="stDialog"],[data-testid="stDialog"] [data-testid="stDialogContent"],[data-testid="stDialog"] [data-testid="stMarkdownContainer"]{background:#0f1b2e!important;color:#edf4ff!important}
+[data-testid="stDialog"] h1,[data-testid="stDialog"] h2,[data-testid="stDialog"] h3,[data-testid="stDialog"] p,[data-testid="stDialog"] li,[data-testid="stDialog"] strong,[data-testid="stDialog"] label,[data-testid="stDialog"] span,[data-testid="stDialog"] [data-testid="stCaptionContainer"],[data-testid="stDialog"] [data-testid="stMarkdownContainer"] *{color:#edf4ff!important;opacity:1!important}
+[data-testid="stDialog"] input{background:#091525!important;color:#f4f8ff!important;-webkit-text-fill-color:#f4f8ff!important;border:1px solid #42617e!important}
+[data-testid="stDialog"] input::placeholder{color:#9aacc2!important;-webkit-text-fill-color:#9aacc2!important;opacity:1!important}
+[data-testid="stDialog"] a{color:#55e3d2!important}
+[data-testid="stDialog"] button[data-testid="stBaseButton-primary"],[data-testid="stDialog"] button[data-testid="stBaseButton-primary"] *{color:#071522!important}
 .brand{display:flex;align-items:center;gap:13px;padding:6px 0 14px}
 .brand-mark{width:56px;height:56px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(145deg,#17394b,#10273b);border:1px solid rgba(56,214,194,.42);box-shadow:0 8px 28px rgba(14,190,177,.12),inset 0 1px 0 rgba(255,255,255,.08)}
 .brand-mark svg{width:39px;height:39px;filter:drop-shadow(0 0 7px rgba(56,214,194,.23))}
