@@ -123,10 +123,10 @@ def split_text(text, size=1000, overlap=150):
     return [c for c in out if c]
 
 
-def to_chunks(name, data):
+def to_chunks(name, data, chunk_size=1000, chunk_overlap=150):
     chunks, part = [], 0
     for loc, text in extract(name, data):
-        for piece in split_text(text, size=1800 if loc != "document" and not loc.startswith("p.") else 1000):
+        for piece in split_text(text, size=chunk_size, overlap=chunk_overlap):
             if loc == "document":
                 part += 1
                 shown = f"part {part}"
@@ -169,7 +169,11 @@ def ingest(client, uploads, status):
             continue
         try:
             status.update(label=f"Reading {f.name}…")
-            chunks = to_chunks(f.name, data)
+            chunks = to_chunks(
+                f.name, data,
+                chunk_size=st.session_state.get("chunk_size", 1000),
+                chunk_overlap=st.session_state.get("chunk_overlap", 150),
+            )
             capped = len(chunks) > MAX_CHUNKS_PER_FILE
             chunks = chunks[:MAX_CHUNKS_PER_FILE]
             status.update(label=f"Embedding {f.name} ({len(chunks)} parts)…")
@@ -372,8 +376,8 @@ GUIDE = """
 ### Reading an answer
 Open **🔍 Sources** under any answer to see the exact passages it used. If the answer is not in your files the assistant says so instead of guessing.
 
-### The ⚙️ menu
-Change the Normal and DeepThink models, clear the chat, remove all documents, or sign out.
+### The ⚙️ Settings menu
+Choose the OpenAI model used for Normal and DeepThink modes. Adjust **chunk size** (300–4,000 characters) and **chunk overlap** (0 up to the selected chunk size minus 50 characters). Chunking settings apply to files indexed after you change them; remove and re-upload a file to re-index it. You can also clear the chat, remove all documents, or sign out.
 
 ### Tips and limits
 - Scanned PDFs or images of text have no readable text. Use a text-based PDF.
@@ -417,10 +421,23 @@ def render_sources(sources):
 
 
 def settings_popover():
-    with st.popover("⚙️"):
+    with st.popover("⚙️ Settings"):
         models = st.session_state.models
-        st.selectbox("Normal model", list(dict.fromkeys([st.session_state.normal_model] + models)), key="normal_model")
+        st.markdown("**Answer models**")
+        st.caption("Choose which available OpenAI model powers each mode.")
+        st.selectbox("Normal mode model", list(dict.fromkeys([st.session_state.normal_model] + models)), key="normal_model")
         st.selectbox("DeepThink model", list(dict.fromkeys([st.session_state.deep_model] + models)), key="deep_model")
+        st.divider()
+        st.markdown("**Document chunking**")
+        st.caption("These settings apply when you index new files. Remove and re-upload existing files to re-index them.")
+        chunk_size = st.slider("Chunk size (characters)", min_value=300, max_value=4000, step=100, key="chunk_size",
+                               help="Larger chunks keep more context together; smaller chunks give more precise retrieval.")
+        max_overlap = max(0, chunk_size - 50)
+        if st.session_state.get("chunk_overlap", 150) > max_overlap:
+            st.session_state.chunk_overlap = min(150, max_overlap)
+        st.slider("Chunk overlap (characters)", min_value=0, max_value=max_overlap, step=25, key="chunk_overlap",
+                  help="Overlap preserves context between neighbouring chunks.")
+        st.caption(f"Current setup: {chunk_size:,} characters per chunk · {st.session_state.chunk_overlap:,} overlap")
         if st.button("Clear chat"):
             st.session_state.messages = []
             st.rerun()
@@ -474,6 +491,8 @@ def main():
     st.session_state.setdefault("messages", [])
     st.session_state.setdefault("kb", new_kb())
     st.session_state.setdefault("up_n", 0)
+    st.session_state.setdefault("chunk_size", 1000)
+    st.session_state.setdefault("chunk_overlap", 150)
     kb = st.session_state.kb
     client = make_client(st.session_state.api_key)
     pending = st.session_state.pop("pending_q", None)
